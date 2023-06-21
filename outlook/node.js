@@ -13,7 +13,11 @@ const msalConfig = {
 
 const msalClient = new ConfidentialClientApplication(msalConfig);
 
-const scopes = ["calendar.read"];
+const scopes = [
+  "https://graph.microsoft.com/Calendars.Read",
+  "https://graph.microsoft.com/User.Read",
+  "offline_access",
+];
 
 export const authUrl = msalClient.getAuthCodeUrl({
 redirectUri: OUTLOOK_REDIRECT_URL,

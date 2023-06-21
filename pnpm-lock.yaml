@@ -1,14 +1,14 @@
 lockfileVersion: '6.0'
 
 dependencies:
-  '@azure/msal-browser':
-    specifier: ^2.37.0
-    version: 2.37.0
   '@azure/msal-node':
     specifier: ^1.17.2
     version: 1.17.2
 
 devDependencies:
+  '@azure/msal-browser':
+    specifier: ^2.37.0
+    version: 2.37.0
   '@microsoft/microsoft-graph-client':
     specifier: ^3.0.5
     version: 3.0.5(@azure/msal-browser@2.37.0)
@@ -34,6 +34,7 @@ packages:
     engines: {node: '>=0.8.0'}
     dependencies:
       '@azure/msal-common': 13.0.0
+    dev: true
 
   /@azure/msal-common@13.0.0:
     resolution: {integrity: sha512-GqCOg5H5bouvLij9NFXFkh+asRRxsPBRwnTDsfK7o0KcxYHJbuidKw8/VXpycahGXNxgtuhqtK/n5he+5NhyEA==}

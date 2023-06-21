@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login with MSAL</title>
+    <script src="https://alcdn.msauth.net/browser/2.13.1/js/msal-browser.min.js"></script>
+</head>
+<body>
+    <button id="login">Login</button>
+
+    <script type="text/javascript">
+        const msalConfig = {
+            auth: {
+                clientId: "%OUTLOOK_CLIENT_ID%",
+                redirectUri: "%OUTLOOK_REDIRECT_URL%",
+                authority: "https://login.microsoftonline.com/consumers",
+            },
+        };
+
+        const msalClient = new msal.PublicClientApplication(msalConfig);
+
+        msalClient.handleRedirectPromise()
+                .then((response) => {
+                    // handle authentication response
+                    console.log("response", response);
+                    // Close the popup window
+                    if(response) window.opener.postMessage('closePopup', window.origin);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+
+
+        const loginRequest = {
+            scopes: ["openid", "profile", "User.Read", "Calendars.Read"],
+        };
+        document.getElementById("login").addEventListener("click", function () {
+            msalClient.loginPopup(loginRequest)
+                .then(response => {
+                    // handle response
+                    console.log(response);
+                    // Returns
+                    // [
+                    //   "authority",
+                    //   "uniqueId",
+                    //   "tenantId",
+                    //   "scopes",
+                    //   "account",
+                    //   "idToken",
+                    //   "idTokenClaims",
+                    //   "accessToken",
+                    //   "fromCache",
+                    //   "expiresOn",
+                    //   "extExpiresOn",
+                    //   "familyId",
+                    //   "tokenType",
+                    //   "state",
+                    //   "cloudGraphHostName",
+                    //   "msGraphHost"
+                    // ]
+                })
+                .catch(err => {
+                    // handle error
+                    console.log(err);
+                });
+        });
+    </script>
+</body>
+</html>

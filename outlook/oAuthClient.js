@@ -1,1 +1,2 @@
-export default oauth2Client = {}
+const oauth2Client = {}
+export default oauth2Client
