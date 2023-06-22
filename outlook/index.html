@@ -3,6 +3,8 @@
 <head>
     <title>Login with MSAL</title>
     <script src="https://alcdn.msauth.net/browser/2.13.1/js/msal-browser.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@microsoft/microsoft-graph-client/lib/graph-js-sdk.js"></script>
 </head>
 <body>
     <button id="login">Login</button>
@@ -15,7 +17,7 @@
                 authority: "https://login.microsoftonline.com/consumers",
             },
         };
-
+        const { Client } = MicrosoftGraph;
         const msalClient = new msal.PublicClientApplication(msalConfig);
 
         msalClient.handleRedirectPromise()
@@ -57,6 +59,81 @@
                     //   "cloudGraphHostName",
                     //   "msGraphHost"
                     // ]
+                    // Use the access token to create a Microsoft Graph Client
+                    const client = Client.init({
+                        authProvider: (done) => {
+                            done(null, response.accessToken);
+                        }
+                    });
+
+                    // Define the start and end dates for next week                    
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Set to the start of the day
+                    const nextWeek = new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        today.getDate() + 7
+                    );
+
+                    // Get calendar events for this week
+                    client.api('/me/calendarView')
+                        .query({
+                            startDateTime: today.toISOString(),
+                            endDateTime: nextWeek.toISOString()
+                        })
+                        .get((err, res) => {
+                            if (err) {
+                                console.error(err);
+                                return;
+                            }
+                            // Handle the calendar events response
+                            console.log(res.value);
+                            // Returns
+                            // [
+                            //     "@odata.etag",
+                            //     "id",
+                            //     "createdDateTime",
+                            //     "lastModifiedDateTime",
+                            //     "changeKey",
+                            //     "categories",
+                            //     "transactionId",
+                            //     "originalStartTimeZone",
+                            //     "originalEndTimeZone",
+                            //     "iCalUId",
+                            //     "reminderMinutesBeforeStart",
+                            //     "isReminderOn",
+                            //     "hasAttachments",
+                            //     "subject",
+                            //     "bodyPreview",
+                            //     "importance",
+                            //     "sensitivity",
+                            //     "isAllDay",
+                            //     "isCancelled",
+                            //     "isOrganizer",
+                            //     "responseRequested",
+                            //     "seriesMasterId",
+                            //     "showAs",
+                            //     "type",
+                            //     "webLink",
+                            //     "onlineMeetingUrl",
+                            //     "isOnlineMeeting",
+                            //     "onlineMeetingProvider",
+                            //     "allowNewTimeProposals",
+                            //     "occurrenceId",
+                            //     "isDraft",
+                            //     "hideAttendees",
+                            //     "responseStatus",
+                            //     "body",
+                            //     "start",
+                            //     "end",
+                            //     "location",
+                            //     "locations",
+                            //     "recurrence",
+                            //     "attendees",
+                            //     "organizer",
+                            //     "onlineMeeting"
+                            // ]
+                        });
                 })
                 .catch(err => {
                     // handle error

@@ -3,10 +3,10 @@ import "dotenv/config";
 import polka from "polka";
 
 import { authUrl as googleAuthUrl } from "./gmail/index";
-import { authUrl as outlookAuthUrl } from "./outlook/index";
+// import { authUrl as outlookAuthUrl } from "./outlook/node";
 import { getEvents } from "./gmail/events";
-// import { oauthcallback as gmailAuthCallback } from "./gmail/oAuthCallback";
-import { oauthcallback as outlookAuthCallback} from "./outlook/oAuthCallback";
+import { oauthcallback as gmailAuthCallback } from "./gmail/oAuthCallback";
+import { oauthcallback as outlookAuthCallback } from "./outlook/oAuthCallback";
 import { readFile } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
@@ -56,8 +56,11 @@ const { OUTLOOK_CLIENT_ID, OUTLOOK_REDIRECT_URL } =
 server.get("/oauthcallback", async (req, res) => {
   if (req.query?.error) console.error(req.query);
   console.log("/oauthcallback", req.query, req.params);
-  res.end(await outlookAuthCallback(req, res));
-  //res.end(await gmailAuthCallback(req, res));
+  if (req.query?.code) {
+    res.end(await gmailAuthCallback(req, res));
+  } else {
+    res.end(await outlookAuthCallback(req, res));
+  }
 });
 server.get("/google/events", getEvents);
 
